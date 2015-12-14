@@ -1,7 +1,8 @@
 library(caret) #Classification and regression training
 
-train = read.csv("train.csv", header = TRUE)
+train = read.csv("train.csv", header = TRUE) #Read in the data
 
+#Alter variables accordingly,
 train$Survived[train$Survived == '0'] = 'Perished'
 train$Survived[train$Survived == '1'] = 'Survived'
 
@@ -14,10 +15,13 @@ train$Survived = factor(train$Survived)
 train$Pclass = factor(train$Pclass)
 
 
-set.seed(1)
+set.seed(1) #Set seed for reporoducibility
+
+#Set the trainControl parameters,
 fitControl = trainControl(method = "repeatedcv", number = 10, repeats = 20, summaryFunction = twoClassSummary, 
                           classProbs = TRUE)
 
+#Create the model,
 model = train(Survived ~ Pclass + Sex + Age, 
               method = "glm", 
               data = train,
@@ -26,6 +30,7 @@ model = train(Survived ~ Pclass + Sex + Age,
               trControl = fitControl,
               metric = "ROC")
 
+#Create the links to the interface,
 shinyServer(
     function(input, output) {
         
